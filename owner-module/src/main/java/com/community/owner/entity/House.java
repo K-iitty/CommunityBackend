@@ -1,0 +1,126 @@
+package com.community.owner.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import java.math.BigDecimal;
+
+/**
+ * 房屋实体�? */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("house")
+public class House extends BaseEntity {
+    
+    /**
+     * 所属社区ID
+     */
+    @TableField("community_id")
+    private Long communityId;
+    
+    /**
+     * 所属楼宇ID
+     */
+    @TableField("building_id")
+    private Long buildingId;
+    
+    /**
+     * 房间�?     */
+    @TableField("room_no")
+    private String roomNo;
+    
+    /**
+     * 完整房间�?     */
+    @TableField("full_room_no")
+    private String fullRoomNo;
+    
+    /**
+     * 房屋唯一编码
+     */
+    @TableField("house_code")
+    private String houseCode;
+    
+    /**
+     * 建筑面积(�?
+     */
+    @TableField("building_area")
+    private BigDecimal buildingArea;
+    
+    /**
+     * 使用面积(�?
+     */
+    @TableField("usable_area")
+    private BigDecimal usableArea;
+    
+    /**
+     * 公摊面积(�?
+     */
+    @TableField("shared_area")
+    private BigDecimal sharedArea;
+    
+    /**
+     * 房屋类型:住宅/商铺/办公/车库
+     */
+    @TableField("house_type")
+    private String houseType;
+    
+    /**
+     * 房屋户型
+     */
+    @TableField("house_layout")
+    private String houseLayout;
+    
+    /**
+     * 房屋朝向
+     */
+    @TableField("house_orientation")
+    private String houseOrientation;
+    
+    /**
+     * 车位�?     */
+    @TableField("parking_space_no")
+    private String parkingSpaceNo;
+    
+    /**
+     * 车位类型
+     */
+    @TableField("parking_type")
+    private String parkingType;
+    
+    /**
+     * 房屋状�?空置/已售/已租/装修�?     */
+    @TableField("house_status")
+    private String houseStatus;
+    
+    /**
+     * 装修状�?     */
+    @TableField("decoration_status")
+    private String decorationStatus;
+    
+    /**
+     * 所在楼�?     */
+    @TableField("floor_level")
+    private Integer floorLevel;
+    
+    /**
+     * 是否有阳�?     */
+    @TableField("has_balcony")
+    private Integer hasBalcony;
+    
+    /**
+     * 是否有花�?     */
+    @TableField("has_garden")
+    private Integer hasGarden;
+    
+    /**
+     * 备注信息
+     */
+    @TableField("remark")
+    private String remark;
+    
+    /**
+     * 户型图（1张）
+     */
+    @TableField("floor_plan_image")
+    private String floorPlanImage;
+}

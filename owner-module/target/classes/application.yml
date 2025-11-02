@@ -1,0 +1,73 @@
+server:
+  port: 8081
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  application:
+    name: community-client-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/community?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: sheep14
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 
+      database: 0
+      timeout: 2000ms
+  ai:
+    dashscope:
+      api-key: ${ALIBABA_BAILIAN_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.8
+  mvc:
+    async:
+      request-timeout: 300000
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com.community: debug
+
+knife4j:
+  enable: true
+  production: false
+  basic:
+    enable: false
+  setting:
+    language: zh_cn
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: true
+  writer-with-default-pretty-printer: true
+
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucket-name: smart-community-system
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET}
+
+jwt:
+  secret: mySecretKeyForCommunitySystemWhichIsVeryLongAndSecure
+  expiration: 86400000
+
+# 文件上传配置
+file:
+  upload-path: uploads/knowledge

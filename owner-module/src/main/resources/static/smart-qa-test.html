@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能问答流式输出测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .token-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .token-section label {
+            display: block;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .token-section input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .token-section .hint {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #question {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        #question:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .chat-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            text-align: right;
+        }
+        
+        .message.ai {
+            text-align: left;
+        }
+        
+        .message-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .message.user .message-label {
+            color: #667eea;
+        }
+        
+        .message.ai .message-label {
+            color: #764ba2;
+        }
+        
+        .message-content {
+            display: inline-block;
+            padding: 12px 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+        }
+        
+        .message.ai .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        
+        .typing {
+            display: inline-block;
+            padding: 5px 0;
+        }
+        
+        .typing span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #764ba2;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite;
+        }
+        
+        .typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .controls button {
+            padding: 8px 20px;
+            font-size: 0.9em;
+        }
+        
+        .clear-btn {
+            background: #6c757d;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .status.streaming {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 智能问答测试</h1>
+        <p class="subtitle">SSE 流式输出实时演示</p>
+        
+        <div class="token-section">
+            <label for="token">🔐 JWT Token:</label>
+            <input type="text" id="token" placeholder="请先登录获取 Token，或粘贴已有的 Token">
+            <div class="hint">
+                💡 提示: 先在 <a href="http://localhost:8081/doc.html" target="_blank">Knife4j</a> 中登录获取 Token，然后粘贴到这里
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <input 
+                type="text" 
+                id="question" 
+                placeholder="输入您的问题，例如：我的房子在哪里？"
+                onkeypress="handleKeyPress(event)"
+            >
+            <button id="sendBtn" onclick="askQuestion()">📤 发送</button>
+        </div>
+        
+        <div class="chat-container" id="chatContainer"></div>
+        
+        <div class="controls">
+            <button class="clear-btn" onclick="clearChat()">🗑️ 清空对话</button>
+            <button onclick="clearHistory()">🔄 重置历史</button>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+    
+    <script>
+        let conversationHistory = [];
+        let isStreaming = false;
+        
+        // API基础URL配置 - 自动检测或使用默认值
+        const API_BASE_URL = window.location.port === '8081' 
+            ? '' // 如果是通过8081访问，使用相对路径
+            : 'http://localhost:8081'; // 否则使用完整URL
+        
+        console.log('API_BASE_URL:', API_BASE_URL);
+        console.log('当前页面URL:', window.location.href);
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !isStreaming) {
+                askQuestion();
+            }
+        }
+        
+        async function askQuestion() {
+            const questionInput = document.getElementById('question');
+            const chatContainer = document.getElementById('chatContainer');
+            const sendBtn = document.getElementById('sendBtn');
+            const statusDiv = document.getElementById('status');
+            const tokenInput = document.getElementById('token');
+            
+            const question = questionInput.value.trim();
+            const token = tokenInput.value.trim();
+            
+            // 验证输入
+            if (!token) {
+                showError('请先输入 JWT Token！');
+                tokenInput.focus();
+                return;
+            }
+            
+            if (!question) {
+                showError('请输入问题！');
+                questionInput.focus();
+                return;
+            }
+            
+            // 防止重复提交
+            if (isStreaming) {
+                return;
+            }
+            
+            isStreaming = true;
+            sendBtn.disabled = true;
+            questionInput.disabled = true;
+            
+            // 显示用户问题
+            addUserMessage(question);
+            questionInput.value = '';
+            
+            // 显示AI正在思考
+            const aiMessageId = 'ai-msg-' + Date.now();
+            addAiMessage('', aiMessageId, true);
+            
+            statusDiv.textContent = '📡 正在连接...';
+            statusDiv.className = 'status streaming';
+            
+            try {
+                const apiUrl = `${API_BASE_URL}/api/owner/smart-qa/chat`;
+                console.log('发送请求到:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'text/event-stream'
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        history: conversationHistory
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                statusDiv.textContent = '✨ AI 正在回答...';
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let aiAnswer = '';
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    
+                    if (done) {
+                        console.log('流式输出完成');
+                        break;
+                    }
+                    
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\\n\\n');
+                    buffer = lines.pop();
+                    
+                    for (const line of lines) {
+                        if (line.trim()) {
+                            const eventMatch = line.match(/^event: (.+)$/m);
+                            const dataMatch = line.match(/^data: (.+)$/m);
+                            
+                            if (eventMatch && dataMatch) {
+                                const event = eventMatch[1];
+                                const data = dataMatch[1];
+                                
+                                if (event === 'message') {
+                                    aiAnswer += data;
+                                    updateAiMessage(aiMessageId, aiAnswer, false);
+                                } else if (event === 'done') {
+                                    console.log('✅ 回答完成');
+                                    updateAiMessage(aiMessageId, aiAnswer, false);
+                                    
+                                    // 保存到对话历史
+                                    conversationHistory.push({
+                                        role: 'user',
+                                        content: question
+                                    });
+                                    conversationHistory.push({
+                                        role: 'assistant',
+                                        content: aiAnswer
+                                    });
+                                    
+                                    statusDiv.textContent = '✅ 回答完成';
+                                    statusDiv.className = 'status';
+                                } else if (event === 'error') {
+                                    console.error('❌ 错误:', data);
+                                    updateAiMessage(aiMessageId, `错误: ${data}`, false);
+                                    statusDiv.textContent = '❌ 发生错误';
+                                    statusDiv.className = 'status';
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                console.error('请求失败:', error);
+                showError(`请求失败: ${error.message}`);
+                statusDiv.textContent = '';
+                statusDiv.className = 'status';
+                
+                // 移除等待消息
+                const aiMsg = document.getElementById(aiMessageId);
+                if (aiMsg) aiMsg.remove();
+            } finally {
+                isStreaming = false;
+                sendBtn.disabled = false;
+                questionInput.disabled = false;
+                questionInput.focus();
+            }
+        }
+        
+        function addUserMessage(text) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                <div class="message-label">👤 您</div>
+                <div class="message-content">${escapeHtml(text)}</div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function addAiMessage(text, id, typing = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.id = id;
+            messageDiv.className = 'message ai';
+            
+            if (typing) {
+                messageDiv.innerHTML = `
+                    <div class="message-label">🤖 AI助手</div>
+                    <div class="message-content">
+                        <div class="typing">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-label">🤖 AI助手</div>
+                    <div class="message-content">${escapeHtml(text)}</div>
+                `;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function updateAiMessage(id, text, typing = false) {
+            const messageDiv = document.getElementById(id);
+            if (!messageDiv) return;
+            
+            if (typing) {
+                messageDiv.innerHTML = `
+                    <div class="message-label">🤖 AI助手</div>
+                    <div class="message-content">
+                        <div class="typing">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-label">🤖 AI助手</div>
+                    <div class="message-content">${escapeHtml(text)}</div>
+                `;
+            }
+            
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function showError(message) {
+            const chatContainer = document.getElementById('chatContainer');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = `❌ ${message}`;
+            chatContainer.appendChild(errorDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // 3秒后自动移除错误消息
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 3000);
+        }
+        
+        function clearChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = '';
+            document.getElementById('status').textContent = '';
+        }
+        
+        function clearHistory() {
+            conversationHistory = [];
+            alert('✅ 对话历史已重置');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 页面加载时的提示
+        window.onload = function() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <h3>👋 欢迎使用智能问答！</h3>
+                    <p style="margin-top: 10px;">请先在上方输入 JWT Token，然后开始提问</p>
+                    <p style="margin-top: 5px; font-size: 0.9em;">您可以在 <a href="http://localhost:8081/doc.html" target="_blank">Knife4j 文档</a> 中登录获取 Token</p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                        💡 当前API地址: ${API_BASE_URL || '相对路径'}/api/owner/smart-qa/chat
+                    </p>
+                </div>
+            `;
+        };
+    </script>
+</body>
+</html>
+
