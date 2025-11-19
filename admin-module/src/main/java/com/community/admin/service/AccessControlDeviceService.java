@@ -1,0 +1,25 @@
+package com.community.admin.service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.community.admin.domain.entity.AccessControlDevice;
+
+public interface AccessControlDeviceService extends IService<AccessControlDevice> {
+    
+    /**
+     * 分页查询门禁设备信息
+     * @param page 分页对象
+     * @param accessControlDevice 查询条件
+     * @return 门禁设备信息分页数据
+     */
+    IPage<AccessControlDevice> selectAccessControlDevicePage(IPage<AccessControlDevice> page, AccessControlDevice accessControlDevice);
+
+    /**
+     * 根据设备名称或设备编码分页查询门禁设备信息
+     * @param page 分页对象
+     * @param deviceName 设备名称
+     * @param deviceCode 设备编码
+     * @return 门禁设备信息分页数据
+     */
+    IPage<AccessControlDevice> selectAccessControlDevicePageByMultiple(IPage<AccessControlDevice> page, String deviceName, String deviceCode);
+}
