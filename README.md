@@ -8,6 +8,11 @@
 
 ---
 
+## 项目指路
+- **后端项目地址**：https://github.com/K-iitty/CommunityBackend
+- **web网页项目地址**：https://github.com/K-iitty/CommunityClientBackend
+- **微信小程序项目地址**：https://github.com/K-iitty/CommunityClientFrontend
+
 ## 模块结构
 
 本项目采用多模块设计，将不同角色的业务逻辑清晰地分离到独立的模块中，便于独立开发、测试和维护。
