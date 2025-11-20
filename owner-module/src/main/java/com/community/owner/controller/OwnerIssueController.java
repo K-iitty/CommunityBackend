@@ -1,15 +1,15 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.*;
-import com.community.owner.dto.IssueDetailVO;
-import com.community.owner.dto.IssueEvaluationRequest;
-import com.community.owner.dto.IssueFollowUpRequest;
-import com.community.owner.dto.IssueSubmitRequest;
+import com.community.owner.domain.dto.vo.IssueDetailVO;
+import com.community.owner.domain.dto.request.IssueEvaluationRequest;
+import com.community.owner.domain.dto.request.IssueFollowUpRequest;
+import com.community.owner.domain.dto.request.IssueSubmitRequest;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
-import com.community.owner.entity.OwnerIssue;
+import com.community.owner.domain.entity.Owner;
+import com.community.owner.domain.entity.OwnerIssue;
 import com.community.owner.service.OwnerIssueService;
 import com.community.owner.service.OwnerService;
+import com.community.owner.service.RedisMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +40,10 @@ public class OwnerIssueController {
     @Autowired
     private JwtUtil jwtUtil;
     
+    @Autowired
+    private RedisMessageService redisMessageService;
+
+
     /**
      * 提交问题反馈
      */
@@ -73,6 +76,19 @@ public class OwnerIssueController {
             
             // 提交问题
             OwnerIssue issue = ownerIssueService.submitIssue(owner.getId(), request);
+            
+            // 发布实时同步消息
+            try {
+                redisMessageService.publishOwnerChange("CREATE", "OwnerIssue", issue.getId(), issue);
+                // 同时通知物业端和管理端
+                redisMessageService.publishNotification("property", "NEW_ISSUE", "新问题反馈", 
+                    "业主 " + owner.getName() + " 提交了新的问题反馈", null);
+                redisMessageService.publishNotification("admin", "NEW_ISSUE", "新问题反馈", 
+                    "业主 " + owner.getName() + " 提交了新的问题反馈", null);
+            } catch (Exception e) {
+                // 记录日志但不影响主要业务流程
+                System.err.println("发布实时消息失败: " + e.getMessage());
+            }
             
             response.put("success", true);
             response.put("data", issue);

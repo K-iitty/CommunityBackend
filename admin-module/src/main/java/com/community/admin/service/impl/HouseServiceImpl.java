@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.community.admin.common.service.OssService;
-import com.community.admin.dao.HouseDao;
+import com.community.admin.mapper.HouseDao;
 import com.community.admin.domain.entity.House;
 import com.community.admin.domain.vo.HouseDetailVO;
 import com.community.admin.service.HouseService;

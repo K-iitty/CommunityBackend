@@ -1,6 +1,6 @@
 package com.community.property.mapper;
 
-import com.community.property.entity.CommunityInfo;
+import com.community.property.domain.entity.CommunityInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

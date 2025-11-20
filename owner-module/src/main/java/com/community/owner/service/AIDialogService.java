@@ -1,8 +1,8 @@
 package com.community.owner.service;
 
-import com.community.owner.dto.AIDialogResponse;
-import com.community.owner.entity.SmartQaKnowledge;
-import com.community.owner.entity.SmartQaSearchHistory;
+import com.community.owner.domain.dto.response.AIDialogResponse;
+import com.community.owner.domain.entity.SmartQaKnowledge;
+import com.community.owner.domain.entity.SmartQaSearchHistory;
 import com.community.owner.mapper.SmartQaKnowledgeMapper;
 import com.community.owner.mapper.SmartQaSearchHistoryMapper;
 import lombok.extern.slf4j.Slf4j;

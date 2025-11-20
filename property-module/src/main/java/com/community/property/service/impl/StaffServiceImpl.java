@@ -1,9 +1,9 @@
 package com.community.property.service.impl;
 
-import com.community.property.dto.StaffProfileUpdateRequest;
-import com.community.property.dto.StaffInfoUpdateApplyRequest;
+import com.community.property.domain.dto.request.StaffProfileUpdateRequest;
+import com.community.property.domain.dto.request.StaffInfoUpdateApplyRequest;
 import com.community.property.mapper.StaffMapper;
-import com.community.property.entity.Staff;
+import com.community.property.domain.entity.Staff;
 import com.community.property.service.StaffService;
 import com.community.property.service.ImageService;
 import com.fasterxml.jackson.core.type.TypeReference;

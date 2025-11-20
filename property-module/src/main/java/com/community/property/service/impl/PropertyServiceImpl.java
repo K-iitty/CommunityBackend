@@ -1,9 +1,9 @@
 package com.community.property.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.community.property.domain.entity.*;
 import com.community.property.mapper.*;
-import com.community.property.entity.*;
-import com.community.property.dto.StaffProfileUpdateRequest;
+import com.community.property.domain.dto.request.StaffProfileUpdateRequest;
 import com.community.property.service.PropertyService;
 import com.community.property.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;

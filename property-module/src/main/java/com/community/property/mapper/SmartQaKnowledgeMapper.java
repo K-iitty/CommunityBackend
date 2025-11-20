@@ -1,7 +1,7 @@
 package com.community.property.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.community.property.entity.SmartQaKnowledge;
+import com.community.property.domain.entity.SmartQaKnowledge;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

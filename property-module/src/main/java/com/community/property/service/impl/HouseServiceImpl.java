@@ -1,7 +1,6 @@
 package com.community.property.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.community.property.entity.House;
+import com.community.property.domain.entity.House;
 import com.community.property.mapper.HouseMapper;
 import com.community.property.service.HouseService;
 import com.community.property.service.ImageService;

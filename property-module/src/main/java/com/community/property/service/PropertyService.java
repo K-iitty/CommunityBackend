@@ -1,6 +1,6 @@
 package com.community.property.service;
 
-import com.community.property.dto.StaffProfileUpdateRequest;
+import com.community.property.domain.dto.request.StaffProfileUpdateRequest;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 

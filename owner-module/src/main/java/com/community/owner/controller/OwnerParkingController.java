@@ -1,14 +1,11 @@
 package com.community.owner.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.community.owner.service.*;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
-import com.community.owner.entity.ParkingLot;
-import com.community.owner.entity.ParkingSpace;
-import com.community.owner.service.OwnerService;
-import com.community.owner.service.ParkingLotService;
-import com.community.owner.service.ParkingSpaceService;
-import com.community.owner.service.OwnerQueryService;
+import com.community.owner.domain.entity.Owner;
+import com.community.owner.domain.entity.ParkingLot;
+import com.community.owner.domain.entity.ParkingSpace;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +37,9 @@ public class OwnerParkingController {
 
     @Autowired
     private OwnerQueryService ownerQueryService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     private Owner getCurrentOwner(String token) {
         String realToken = token.replace("Bearer ", "");

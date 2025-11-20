@@ -1,8 +1,9 @@
 package com.community.property.controller;
 
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
-import com.community.property.entity.Staff;
-import com.community.property.entity.Department;
+import com.community.property.domain.entity.Staff;
+import com.community.property.domain.entity.Department;
 import com.community.property.service.StaffService;
 import com.community.property.service.DepartmentService;
 import com.community.property.service.PropertyQueryService;
@@ -38,6 +39,9 @@ public class PropertyDepartmentController {
     
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 获取我的部门信息

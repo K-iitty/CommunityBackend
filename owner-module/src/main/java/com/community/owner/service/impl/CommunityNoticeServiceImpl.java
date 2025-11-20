@@ -2,11 +2,11 @@ package com.community.owner.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.owner.dto.NoticeDetailVO;
-import com.community.owner.dto.NoticeFilterRequest;
-import com.community.owner.dto.NoticeListVO;
-import com.community.owner.dto.NoticeSearchRequest;
-import com.community.owner.entity.CommunityNotice;
+import com.community.owner.domain.dto.vo.NoticeDetailVO;
+import com.community.owner.domain.dto.request.NoticeFilterRequest;
+import com.community.owner.domain.dto.vo.NoticeListVO;
+import com.community.owner.domain.dto.request.NoticeSearchRequest;
+import com.community.owner.domain.entity.CommunityNotice;
 import com.community.owner.mapper.CommunityNoticeMapper;
 import com.community.owner.service.CommunityNoticeService;
 import org.springframework.beans.BeanUtils;

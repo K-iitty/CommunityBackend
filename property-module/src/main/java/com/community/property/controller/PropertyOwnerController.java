@@ -1,7 +1,8 @@
 package com.community.property.controller;
 
 import com.community.property.mapper.OwnerMapper;
-import com.community.property.entity.Owner;
+import com.community.property.domain.entity.Owner;
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +28,9 @@ public class PropertyOwnerController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     /**
      * 获取所有业主列表（分页）

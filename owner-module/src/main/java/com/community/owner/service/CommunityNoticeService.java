@@ -1,10 +1,10 @@
 package com.community.owner.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.community.owner.dto.NoticeDetailVO;
-import com.community.owner.dto.NoticeFilterRequest;
-import com.community.owner.dto.NoticeSearchRequest;
-import com.community.owner.entity.CommunityNotice;
+import com.community.owner.domain.dto.vo.NoticeDetailVO;
+import com.community.owner.domain.dto.request.NoticeFilterRequest;
+import com.community.owner.domain.dto.request.NoticeSearchRequest;
+import com.community.owner.domain.entity.CommunityNotice;
 
 import java.util.Map;
 

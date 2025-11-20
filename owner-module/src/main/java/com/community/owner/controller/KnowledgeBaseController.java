@@ -1,9 +1,10 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.AIDialogResponse;
-import com.community.owner.entity.SmartQaKnowledge;
+import com.community.owner.domain.dto.response.AIDialogResponse;
+import com.community.owner.domain.entity.SmartQaKnowledge;
+import com.community.owner.service.RedisMessageService;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.OwnerService;
 import com.community.owner.service.AIDialogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,7 @@ import java.util.Map;
 @RequestMapping("/api/owner/knowledge-base")
 @Tag(name = "业主知识库", description = "知识库查询接口，为AI模型提供上下文信息")
 public class KnowledgeBaseController {
+
     
     private static final Logger logger = LoggerFactory.getLogger(KnowledgeBaseController.class);
     
@@ -41,6 +43,9 @@ public class KnowledgeBaseController {
     
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 查询知识库

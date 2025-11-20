@@ -1,6 +1,6 @@
 package com.community.property.service.impl;
 
-import com.community.property.entity.CommunityInfo;
+import com.community.property.domain.entity.CommunityInfo;
 import com.community.property.mapper.CommunityInfoMapper;
 import com.community.property.service.CommunityService;
 import com.community.property.service.ImageService;

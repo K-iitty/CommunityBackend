@@ -1,6 +1,6 @@
 package com.community.property.service.impl;
 
-import com.community.property.entity.Vehicle;
+import com.community.property.domain.entity.Vehicle;
 import com.community.property.mapper.VehicleMapper;
 import com.community.property.service.VehicleService;
 import com.community.property.service.ImageService;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.community.property.mapper.ParkingSpaceMapper;
-import com.community.property.entity.ParkingSpace;
+import com.community.property.domain.entity.ParkingSpace;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**

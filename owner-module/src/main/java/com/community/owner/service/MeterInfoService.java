@@ -1,7 +1,7 @@
 package com.community.owner.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.community.owner.entity.MeterInfo;
+import com.community.owner.domain.entity.MeterInfo;
 
 public interface MeterInfoService extends IService<MeterInfo> {
 }

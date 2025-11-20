@@ -1,0 +1,36 @@
+{
+  "groups": [
+    {
+      "name": "aliyun.oss",
+      "type": "com.community.admin.common.config.OssConfig",
+      "sourceType": "com.community.admin.common.config.OssConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "aliyun.oss.access-key-id",
+      "type": "java.lang.String",
+      "description": "访问密钥ID",
+      "sourceType": "com.community.admin.common.config.OssConfig"
+    },
+    {
+      "name": "aliyun.oss.access-key-secret",
+      "type": "java.lang.String",
+      "description": "访问密钥Secret",
+      "sourceType": "com.community.admin.common.config.OssConfig"
+    },
+    {
+      "name": "aliyun.oss.bucket-name",
+      "type": "java.lang.String",
+      "description": "存储空间名称",
+      "sourceType": "com.community.admin.common.config.OssConfig"
+    },
+    {
+      "name": "aliyun.oss.endpoint",
+      "type": "java.lang.String",
+      "description": "OSS服务接入点 例如: oss-cn-hangzhou.aliyuncs.com",
+      "sourceType": "com.community.admin.common.config.OssConfig"
+    }
+  ],
+  "hints": []
+}

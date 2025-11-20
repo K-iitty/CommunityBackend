@@ -2,6 +2,7 @@ package com.community.property.controller;
 
 import com.community.property.service.HouseService;
 import com.community.property.service.PropertyService;
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,9 @@ public class PropertyHouseController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     /**
      * 获取房屋详细信息（包含社区和楼栋信息）

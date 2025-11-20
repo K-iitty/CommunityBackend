@@ -1,7 +1,7 @@
 package com.community.owner.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.community.owner.entity.SmartQaKnowledge;
+import com.community.owner.domain.entity.SmartQaKnowledge;
 import com.community.owner.mapper.SmartQaKnowledgeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

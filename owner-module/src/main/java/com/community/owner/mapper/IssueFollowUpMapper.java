@@ -1,7 +1,7 @@
 package com.community.owner.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.community.owner.entity.IssueFollowUp;
+import com.community.owner.domain.entity.IssueFollowUp;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

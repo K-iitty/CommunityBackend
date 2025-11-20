@@ -3,7 +3,7 @@ package com.community.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.admin.dao.VehicleDao;
+import com.community.admin.mapper.VehicleDao;
 import com.community.admin.domain.entity.Vehicle;
 import com.community.admin.service.VehicleService;
 import com.community.admin.common.service.OssService;
@@ -12,14 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class VehicleServiceImpl extends ServiceImpl<VehicleDao, Vehicle> implements VehicleService {

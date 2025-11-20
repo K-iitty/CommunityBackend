@@ -2,7 +2,6 @@ package com.community.admin.common.util;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

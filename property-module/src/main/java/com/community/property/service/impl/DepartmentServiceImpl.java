@@ -2,7 +2,7 @@ package com.community.property.service.impl;
 
 import com.community.property.mapper.DepartmentMapper;
 import com.community.property.mapper.OwnerIssueMapper;
-import com.community.property.entity.Department;
+import com.community.property.domain.entity.Department;
 import com.community.property.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

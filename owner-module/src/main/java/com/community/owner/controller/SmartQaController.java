@@ -1,8 +1,9 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.QaRequest;
+import com.community.owner.domain.dto.request.QaRequest;
+import com.community.owner.service.RedisMessageService;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.OwnerService;
 import com.community.owner.service.SmartQaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +45,9 @@ public class SmartQaController {
     
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 智能问答（流式输出）

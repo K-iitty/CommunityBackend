@@ -1,8 +1,8 @@
 package com.community.property.service;
 
-import com.community.property.dto.StaffProfileUpdateRequest;
-import com.community.property.dto.StaffInfoUpdateApplyRequest;
-import com.community.property.entity.Staff;
+import com.community.property.domain.dto.request.StaffProfileUpdateRequest;
+import com.community.property.domain.dto.request.StaffInfoUpdateApplyRequest;
+import com.community.property.domain.entity.Staff;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

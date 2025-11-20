@@ -2,13 +2,16 @@ package com.community.property.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.community.property.domain.entity.IssueFollowUp;
+import com.community.property.domain.entity.Owner;
+import com.community.property.domain.entity.OwnerIssue;
+import com.community.property.domain.entity.Staff;
 import com.community.property.mapper.OwnerIssueMapper;
 import com.community.property.mapper.IssueFollowUpMapper;
 import com.community.property.mapper.OwnerMapper;
 import com.community.property.mapper.StaffMapper;
-import com.community.property.entity.*;
-import com.community.property.dto.IssueDetailVO;
-import com.community.property.dto.IssueFollowUpRequest;
+import com.community.property.domain.dto.vo.IssueDetailVO;
+import com.community.property.domain.dto.request.IssueFollowUpRequest;
 import com.community.property.service.PropertyIssueService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -557,5 +560,96 @@ public class PropertyIssueServiceImpl extends ServiceImpl<OwnerIssueMapper, Owne
         map.put("contactName", issue.getContactName());
         map.put("contactPhone", issue.getContactPhone());
         return map;
+    }
+
+    @Override
+    public Map<String, Object> listIssuesForStaff(String staffId, Integer page, Integer size, String status) {
+        if (page == null || page < 1) page = 1;
+        if (size == null || size < 1) size = 10;
+
+        QueryWrapper<OwnerIssue> queryWrapper = new QueryWrapper<>();
+        
+        // 只查询分配给指定物业人员的问题
+        queryWrapper.eq("assigned_staff_id", staffId);
+        
+        if (status != null && !status.trim().isEmpty()) {
+            queryWrapper.eq("issue_status", status);
+        }
+
+        queryWrapper.orderByDesc("reported_time");
+
+        int offset = (page - 1) * size;
+        queryWrapper.last("LIMIT " + size + " OFFSET " + offset);
+
+        List<OwnerIssue> issues = list(queryWrapper);
+        long total = count(new QueryWrapper<OwnerIssue>()
+                .eq("assigned_staff_id", staffId)
+                .eq(status != null && !status.trim().isEmpty(), "issue_status", status));
+
+        // 转换为简化的VO对象
+        List<Map<String, Object>> issueVOs = new ArrayList<>();
+        for (OwnerIssue issue : issues) {
+            Map<String, Object> vo = new HashMap<>();
+            vo.put("id", issue.getId());
+            vo.put("issueTitle", issue.getIssueTitle());
+            vo.put("issueType", issue.getIssueType());
+            vo.put("urgencyLevel", issue.getUrgencyLevel());
+            vo.put("issueStatus", issue.getIssueStatus());
+            vo.put("workStatus", issue.getWorkStatus());
+            vo.put("reportedTime", issue.getReportedTime());
+            vo.put("contactName", issue.getContactName());
+            vo.put("contactPhone", issue.getContactPhone());
+            vo.put("assignedStaffId", issue.getAssignedStaffId());
+            vo.put("processorStaffId", issue.getProcessorStaffId());
+            issueVOs.add(vo);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("items", issueVOs);
+        result.put("total", total);
+        result.put("page", page);
+        result.put("size", size);
+        result.put("totalPages", (total + size - 1) / size);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getIssueStatisticsForStaff(String staffId) {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            // 查询分配给指定物业人员的问题总数
+            long totalIssues = count(new QueryWrapper<OwnerIssue>()
+                    .eq("assigned_staff_id", staffId));
+
+            // 查询待处理的问题数
+            long pendingIssues = count(new QueryWrapper<OwnerIssue>()
+                    .eq("assigned_staff_id", staffId)
+                    .eq("issue_status", "待处理"));
+
+            // 查询处理中的问题数
+            long processingIssues = count(new QueryWrapper<OwnerIssue>()
+                    .eq("assigned_staff_id", staffId)
+                    .eq("issue_status", "处理中"));
+
+            // 查询已完成的问题数
+            long completedIssues = count(new QueryWrapper<OwnerIssue>()
+                    .eq("assigned_staff_id", staffId)
+                    .eq("issue_status", "已完成"));
+
+            result.put("success", true);
+            result.put("data", Map.of(
+                "totalIssues", totalIssues,
+                "pendingIssues", pendingIssues,
+                "processingIssues", processingIssues,
+                "completedIssues", completedIssues
+            ));
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "统计失败: " + e.getMessage());
+        }
+        
+        return result;
     }
 }

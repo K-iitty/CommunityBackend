@@ -3,7 +3,7 @@ package com.community.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.admin.dao.IssueFollowUpDao;
+import com.community.admin.mapper.IssueFollowUpDao;
 import com.community.admin.domain.entity.IssueFollowUp;
 import com.community.admin.service.IssueFollowUpService;
 import org.apache.commons.lang3.StringUtils;

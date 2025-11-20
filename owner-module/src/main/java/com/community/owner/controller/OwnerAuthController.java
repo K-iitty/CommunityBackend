@@ -1,10 +1,11 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.AuthRequest;
-import com.community.owner.dto.AuthResponse;
+import com.community.owner.domain.dto.request.AuthRequest;
+import com.community.owner.domain.dto.response.AuthResponse;
+import com.community.owner.service.RedisMessageService;
 import com.community.owner.utils.JwtUtil;
 import com.community.owner.utils.PasswordUtil;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.OwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,6 +30,9 @@ public class OwnerAuthController {
     
     @Autowired
     private OwnerService ownerService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 业主登录

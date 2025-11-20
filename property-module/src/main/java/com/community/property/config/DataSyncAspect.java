@@ -5,7 +5,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +21,6 @@ public class DataSyncAspect {
 
     @Autowired
     private RedisMessageService redisMessageService;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 拦截Service层的增删改操作
@@ -59,12 +55,8 @@ public class DataSyncAspect {
             Object entityId = extractEntityId(args, result);
             
             if (action != null && entityType != null) {
-                // 发布数据变更消息
+                // 发布数据变更消息（RedisMessageService内部会处理时间戳更新）
                 redisMessageService.publishPropertyChange(action, entityType, entityId, result);
-                
-                // 更新最后更新时间
-                String key = "community:last_update:" + entityType;
-                redisTemplate.opsForValue().set(key, String.valueOf(System.currentTimeMillis()));
                 
                 log.info("Published data sync message: action={}, entityType={}, entityId={}", 
                         action, entityType, entityId);

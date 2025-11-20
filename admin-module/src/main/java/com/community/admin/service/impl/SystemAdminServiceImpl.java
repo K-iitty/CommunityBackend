@@ -3,7 +3,7 @@ package com.community.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.admin.dao.SystemAdminDao;
+import com.community.admin.mapper.SystemAdminDao;
 import com.community.admin.domain.entity.SystemAdmin;
 import com.community.admin.service.SystemAdminService;
 import org.apache.commons.lang3.StringUtils;

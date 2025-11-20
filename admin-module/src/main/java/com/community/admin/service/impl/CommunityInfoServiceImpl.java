@@ -2,16 +2,13 @@ package com.community.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.admin.dao.CommunityInfoDao;
+import com.community.admin.mapper.CommunityInfoDao;
 import com.community.admin.domain.entity.CommunityInfo;
 import com.community.admin.domain.entity.House;
 import com.community.admin.domain.entity.HouseOwner;
-import com.community.admin.domain.entity.Owner;
 import com.community.admin.domain.entity.Building;
 import com.community.admin.domain.entity.ParkingLot;
-import com.community.admin.domain.entity.Vehicle;
 import com.community.admin.domain.vo.CommunityStatisticsVO;
 import com.community.admin.service.CommunityInfoService;
 import com.community.admin.service.HouseOwnerService;

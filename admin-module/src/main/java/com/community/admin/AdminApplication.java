@@ -4,14 +4,13 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
 
 // Knife4j增强注解
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 
 @SpringBootApplication
 //@ComponentScan(basePackages = {"com.community.admin"})
-@MapperScan(basePackages = {"com.community.admin.dao"})
+@MapperScan(basePackages = {"com.community.admin.mapper"})
 @EnableCaching
 @EnableKnife4j
 public class AdminApplication {

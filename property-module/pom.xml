@@ -100,6 +100,12 @@
             <artifactId>jjwt-jackson</artifactId>
         </dependency>
         
+        <!-- Jackson JSR310 for Java 8 time support -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        
         <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -110,6 +116,12 @@
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter</artifactId>
+        </dependency>
+        
+        <!-- Spring AOP -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
 

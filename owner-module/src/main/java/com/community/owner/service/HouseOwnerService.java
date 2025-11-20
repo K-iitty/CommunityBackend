@@ -1,7 +1,7 @@
 package com.community.owner.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.community.owner.entity.HouseOwner;
+import com.community.owner.domain.entity.HouseOwner;
 
 public interface HouseOwnerService extends IService<HouseOwner> {
     /**

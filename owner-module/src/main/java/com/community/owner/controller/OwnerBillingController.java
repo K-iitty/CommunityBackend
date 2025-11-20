@@ -1,22 +1,15 @@
 package com.community.owner.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.community.owner.service.*;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.HouseOwner;
-import com.community.owner.entity.MeterConfig;
-import com.community.owner.entity.MeterInfo;
-import com.community.owner.entity.MeterReading;
-import com.community.owner.entity.Owner;
-import com.community.owner.entity.House;
-import com.community.owner.entity.Building;
-import com.community.owner.service.HouseOwnerService;
-import com.community.owner.service.HouseService;
-import com.community.owner.service.MeterConfigService;
-import com.community.owner.service.MeterInfoService;
-import com.community.owner.service.MeterReadingService;
-import com.community.owner.service.OwnerService;
-import com.community.owner.service.BuildingService;
-import com.community.owner.service.OwnerQueryService;
+import com.community.owner.domain.entity.HouseOwner;
+import com.community.owner.domain.entity.MeterConfig;
+import com.community.owner.domain.entity.MeterInfo;
+import com.community.owner.domain.entity.MeterReading;
+import com.community.owner.domain.entity.Owner;
+import com.community.owner.domain.entity.House;
+import com.community.owner.domain.entity.Building;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +49,9 @@ public class OwnerBillingController {
 
     @Autowired
     private OwnerQueryService ownerQueryService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     private Owner getCurrentOwner(String token) {
         String realToken = token.replace("Bearer ", "");

@@ -1,18 +1,13 @@
 package com.community.owner.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.community.owner.service.*;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Building;
-import com.community.owner.entity.CommunityInfo;
-import com.community.owner.entity.House;
-import com.community.owner.entity.HouseOwner;
-import com.community.owner.entity.Owner;
-import com.community.owner.service.BuildingService;
-import com.community.owner.service.CommunityInfoService;
-import com.community.owner.service.HouseOwnerService;
-import com.community.owner.service.HouseService;
-import com.community.owner.service.OwnerService;
-import com.community.owner.service.OwnerQueryService;
+import com.community.owner.domain.entity.Building;
+import com.community.owner.domain.entity.CommunityInfo;
+import com.community.owner.domain.entity.House;
+import com.community.owner.domain.entity.HouseOwner;
+import com.community.owner.domain.entity.Owner;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,6 +42,9 @@ public class OwnerHouseController {
 
     @Autowired
     private OwnerQueryService ownerQueryService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     private Owner getCurrentOwner(String token) {
         String realToken = token.replace("Bearer ", "");
@@ -287,6 +285,17 @@ public class OwnerHouseController {
             ho.setStartDate(LocalDate.now());
             boolean ok = houseOwnerService.save(ho);
             if (ok) {
+                // 发布实时同步消息
+                try {
+                    redisMessageService.publishOwnerChange("CREATE", "HouseOwner", ho.getId(), ho);
+                    redisMessageService.publishNotification("admin", "HOUSE_APPLY", "房屋关联申请", 
+                        "业主申请关联房屋：" + h.getFullRoomNo(), null);
+                    redisMessageService.publishNotification("property", "HOUSE_APPLY", "房屋关联申请", 
+                        "业主申请关联房屋：" + h.getFullRoomNo(), null);
+                } catch (Exception e) {
+                    System.err.println("发布房屋申请实时消息失败: " + e.getMessage());
+                }
+                
                 resp.put("success", true);
                 resp.put("message", "申请已提交，等待审核");
             } else {
@@ -442,10 +451,25 @@ public class OwnerHouseController {
                 return resp;
             }
 
+            // 先获取房屋信息用于通知
+            House house = houseService.getById(houseId);
+            
             QueryWrapper<HouseOwner> qw = new QueryWrapper<>();
             qw.eq("house_id", houseId).eq("owner_id", me.getId());
             boolean ok = houseOwnerService.remove(qw);
             if (ok) {
+                // 发布实时同步消息
+                try {
+                    redisMessageService.publishOwnerChange("DELETE", "HouseOwner", houseId, null);
+                    String roomInfo = house != null ? house.getFullRoomNo() : "房屋ID:" + houseId;
+                    redisMessageService.publishNotification("admin", "HOUSE_UNLINK", "房屋关联删除", 
+                        "业主删除了房屋关联：" + roomInfo, null);
+                    redisMessageService.publishNotification("property", "HOUSE_UNLINK", "房屋关联删除", 
+                        "业主删除了房屋关联：" + roomInfo, null);
+                } catch (Exception e) {
+                    System.err.println("发布房屋关联删除实时消息失败: " + e.getMessage());
+                }
+                
                 resp.put("success", true);
                 resp.put("message", "删除成功");
             } else {

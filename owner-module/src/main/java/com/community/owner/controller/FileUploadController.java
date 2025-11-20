@@ -1,6 +1,7 @@
 package com.community.owner.controller;
 
 import com.community.owner.service.FileUploadService;
+import com.community.owner.service.RedisMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +21,8 @@ import java.util.Map;
 @RequestMapping("/api/owner/upload")
 @Tag(name = "文件上传", description = "文件上传相关接口")
 public class FileUploadController {
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     @Autowired
     private FileUploadService fileUploadService;

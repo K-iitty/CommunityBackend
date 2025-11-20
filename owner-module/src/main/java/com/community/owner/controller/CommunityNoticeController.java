@@ -1,11 +1,12 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.*;
-import com.community.owner.dto.NoticeDetailVO;
-import com.community.owner.dto.NoticeFilterRequest;
-import com.community.owner.dto.NoticeSearchRequest;
+import com.community.owner.domain.dto.vo.NoticeListVO;
+import com.community.owner.domain.dto.vo.NoticeDetailVO;
+import com.community.owner.domain.dto.request.NoticeFilterRequest;
+import com.community.owner.domain.dto.request.NoticeSearchRequest;
+import com.community.owner.service.RedisMessageService;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.CommunityNoticeService;
 import com.community.owner.service.OwnerService;
 import com.community.owner.service.OwnerQueryService;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 @RequestMapping("/api/owner/notices")
 @Tag(name = "社区公告管理", description = "业主查看社区公告相关接口")
 public class CommunityNoticeController {
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     @Autowired
     private CommunityNoticeService communityNoticeService;

@@ -1,16 +1,12 @@
 package com.community.owner.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.community.owner.service.*;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
-import com.community.owner.entity.ParkingLot;
-import com.community.owner.entity.ParkingSpace;
-import com.community.owner.entity.Vehicle;
-import com.community.owner.service.OwnerService;
-import com.community.owner.service.ParkingLotService;
-import com.community.owner.service.ParkingSpaceService;
-import com.community.owner.service.VehicleService;
-import com.community.owner.service.OwnerQueryService;
+import com.community.owner.domain.entity.Owner;
+import com.community.owner.domain.entity.ParkingLot;
+import com.community.owner.domain.entity.ParkingSpace;
+import com.community.owner.domain.entity.Vehicle;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +38,9 @@ public class OwnerVehicleController {
 
     @Autowired
     private OwnerQueryService ownerQueryService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     private Owner getCurrentOwner(String token) {
         String realToken = token.replace("Bearer ", "");
@@ -114,6 +113,17 @@ public class OwnerVehicleController {
 
             boolean ok = vehicleService.save(v);
             if (ok) {
+                // 发布实时同步消息
+                try {
+                    redisMessageService.publishOwnerChange("CREATE", "Vehicle", v.getId(), v);
+                    redisMessageService.publishNotification("property", "NEW_VEHICLE_APPLICATION", "新车辆申请", 
+                        "业主 " + me.getName() + " 申请添加车辆：" + v.getPlateNumber(), null);
+                    redisMessageService.publishNotification("admin", "NEW_VEHICLE_APPLICATION", "新车辆申请", 
+                        "业主 " + me.getName() + " 申请添加车辆：" + v.getPlateNumber(), null);
+                } catch (Exception e) {
+                    System.err.println("发布车辆申请实时消息失败: " + e.getMessage());
+                }
+                
                 resp.put("success", true);
                 resp.put("message", "申请已提交，等待审核");
             } else {
@@ -319,6 +329,17 @@ public class OwnerVehicleController {
 
             boolean ok = vehicleService.updateById(v);
             if (ok) {
+                // 发布实时同步消息
+                try {
+                    redisMessageService.publishOwnerChange("UPDATE", "Vehicle", v.getId(), v);
+                    redisMessageService.publishNotification("property", "VEHICLE_UPDATE", "车辆信息更新", 
+                        "业主 " + me.getName() + " 更新了车辆信息：" + v.getPlateNumber(), null);
+                    redisMessageService.publishNotification("admin", "VEHICLE_UPDATE", "车辆信息更新", 
+                        "业主 " + me.getName() + " 更新了车辆信息：" + v.getPlateNumber(), null);
+                } catch (Exception e) {
+                    System.err.println("发布车辆更新实时消息失败: " + e.getMessage());
+                }
+                
                 resp.put("success", true);
                 resp.put("message", "修改已提交，等待审核");
             } else {
@@ -355,6 +376,17 @@ public class OwnerVehicleController {
             }
             boolean ok = vehicleService.removeById(id);
             if (ok) {
+                // 发布实时同步消息
+                try {
+                    redisMessageService.publishOwnerChange("DELETE", "Vehicle", id, null);
+                    redisMessageService.publishNotification("property", "VEHICLE_DELETE", "车辆删除", 
+                        "业主 " + me.getName() + " 删除了车辆：" + v.getPlateNumber(), null);
+                    redisMessageService.publishNotification("admin", "VEHICLE_DELETE", "车辆删除", 
+                        "业主 " + me.getName() + " 删除了车辆：" + v.getPlateNumber(), null);
+                } catch (Exception e) {
+                    System.err.println("发布车辆删除实时消息失败: " + e.getMessage());
+                }
+                
                 resp.put("success", true);
                 resp.put("message", "删除成功");
             } else {

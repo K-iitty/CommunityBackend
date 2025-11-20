@@ -1,10 +1,11 @@
 package com.community.property.controller;
 
-import com.community.property.dto.AuthRequest;
-import com.community.property.dto.AuthResponse;
+import com.community.property.domain.dto.request.AuthRequest;
+import com.community.property.domain.dto.response.AuthResponse;
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
 import com.community.property.utils.PasswordUtil;
-import com.community.property.entity.Staff;
+import com.community.property.domain.entity.Staff;
 import com.community.property.service.StaffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +33,9 @@ public class PropertyAuthController {
     
     @Autowired
     private StaffService staffService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 物业员工登录

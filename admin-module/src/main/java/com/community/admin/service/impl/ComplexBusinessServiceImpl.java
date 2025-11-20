@@ -2,7 +2,7 @@ package com.community.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.admin.dao.*;
+import com.community.admin.mapper.*;
 import com.community.admin.domain.entity.*;
 import com.community.admin.domain.vo.*;
 import com.community.admin.service.ComplexBusinessService;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ComplexBusinessServiceImpl extends ServiceImpl<CommunityInfoDao, CommunityInfo> implements ComplexBusinessService {

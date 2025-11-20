@@ -1,11 +1,13 @@
 package com.community.property.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
@@ -19,6 +21,10 @@ public class RedisMessageListener implements MessageListener {
 
     @Autowired
     private ObjectMapper objectMapper;
+    
+    @Autowired
+    @Lazy
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -26,9 +32,22 @@ public class RedisMessageListener implements MessageListener {
             String channel = new String(message.getChannel());
             String messageBody = new String(message.getBody());
             
-            log.info("Received Redis message from channel: {}", channel);
+            log.info("Received Redis message from channel: {}, body: {}", channel, messageBody);
+            
+            // 检查消息体是否为空或格式不正确
+            if (messageBody == null || messageBody.trim().isEmpty()) {
+                log.warn("Received empty message body from channel: {}", channel);
+                return;
+            }
+            
+            // 检查是否是数组格式（不支持）
+            if (messageBody.trim().startsWith("[")) {
+                log.warn("Received array format message, skipping: {}", messageBody);
+                return;
+            }
             
             // 解析消息内容
+            @SuppressWarnings("unchecked")
             Map<String, Object> messageData = objectMapper.readValue(messageBody, Map.class);
             
             String module = (String) messageData.get("module");
@@ -98,5 +117,21 @@ public class RedisMessageListener implements MessageListener {
     private void handleOwnerIssueSync(String action, Object entityId, Map<String, Object> messageData) {
         // 处理业主问题同步逻辑
         log.info("Syncing owner issue data: action={}, entityId={}", action, entityId);
+        
+        try {
+            // 更新Redis中的最后更新时间戳，用于前端轮询检查
+            String key = "community:last_update:OwnerIssue";
+            redisTemplate.opsForValue().set(key, String.valueOf(System.currentTimeMillis()));
+            
+            // 如果是问题指派操作，还要更新通用的更新时间戳
+            if ("UPDATE".equals(action) || "CREATE".equals(action)) {
+                String generalKey = "community:last_update:all";
+                redisTemplate.opsForValue().set(generalKey, String.valueOf(System.currentTimeMillis()));
+            }
+            
+            log.info("Updated Redis timestamp for OwnerIssue sync");
+        } catch (Exception e) {
+            log.error("Failed to update Redis timestamp for OwnerIssue sync", e);
+        }
     }
 }

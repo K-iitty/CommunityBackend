@@ -2,7 +2,7 @@ package com.community.owner.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.OwnerService;
 import com.community.owner.mapper.OwnerMapper;
 import org.springframework.stereotype.Service;

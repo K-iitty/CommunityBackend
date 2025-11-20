@@ -1,11 +1,11 @@
 package com.community.owner.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.community.owner.dto.IssueDetailVO;
-import com.community.owner.dto.IssueEvaluationRequest;
-import com.community.owner.dto.IssueFollowUpRequest;
-import com.community.owner.dto.IssueSubmitRequest;
-import com.community.owner.entity.OwnerIssue;
+import com.community.owner.domain.dto.vo.IssueDetailVO;
+import com.community.owner.domain.dto.request.IssueEvaluationRequest;
+import com.community.owner.domain.dto.request.IssueFollowUpRequest;
+import com.community.owner.domain.dto.request.IssueSubmitRequest;
+import com.community.owner.domain.entity.OwnerIssue;
 
 import java.util.List;
 import java.util.Map;

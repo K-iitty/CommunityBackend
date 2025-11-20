@@ -1,7 +1,8 @@
 package com.community.property.controller;
 
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
-import com.community.property.entity.Staff;
+import com.community.property.domain.entity.Staff;
 import com.community.property.service.StaffService;
 import com.community.property.service.CommunityNoticeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import com.community.property.entity.CommunityNotice;
+import com.community.property.domain.entity.CommunityNotice;
 
 /**
  * 物业公告查看控制器
@@ -35,6 +36,9 @@ public class PropertyNoticeController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 获取公告列表
@@ -309,8 +313,8 @@ public class PropertyNoticeController {
                         Long noticeId = null;
                         
                         // data可能是CommunityNotice对象或Map
-                        if (noticeDataObj instanceof com.community.property.entity.CommunityNotice) {
-                            CommunityNotice notice = (com.community.property.entity.CommunityNotice) noticeDataObj;
+                        if (noticeDataObj instanceof CommunityNotice) {
+                            CommunityNotice notice = (CommunityNotice) noticeDataObj;
                             noticeId = notice.getId();
                         } else if (noticeDataObj instanceof Map) {
                             @SuppressWarnings("unchecked")

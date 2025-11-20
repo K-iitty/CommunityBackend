@@ -39,13 +39,15 @@ public class RedisMessageService {
      */
     public void publishDataChange(String module, String action, String entityType, Object entityId, Object data) {
         try {
+            long timestamp = System.currentTimeMillis();
+            
             Map<String, Object> message = new HashMap<>();
             message.put("module", module);
             message.put("action", action);
             message.put("entityType", entityType);
             message.put("entityId", entityId);
             message.put("data", data);
-            message.put("timestamp", System.currentTimeMillis());
+            message.put("timestamp", timestamp);
 
             // 发布到通用主题
             redisTemplate.convertAndSend(TOPIC_DATA_CHANGE, message);
@@ -53,6 +55,13 @@ public class RedisMessageService {
             // 发布到模块特定主题
             String moduleSpecificTopic = "community:" + module.toLowerCase() + ":change";
             redisTemplate.convertAndSend(moduleSpecificTopic, message);
+            
+            // 更新最后更新时间戳，用于前端轮询检查
+            String timestampKey = "community:last_update:" + entityType;
+            redisTemplate.opsForValue().set(timestampKey, String.valueOf(timestamp));
+            
+            // 也更新通用的时间戳
+            redisTemplate.opsForValue().set("community:last_update:all", String.valueOf(timestamp));
 
             log.info("Published data change message: module={}, action={}, entityType={}, entityId={}", 
                     module, action, entityType, entityId);

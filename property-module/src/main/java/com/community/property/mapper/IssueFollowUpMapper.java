@@ -1,6 +1,6 @@
 package com.community.property.mapper;
 
-import com.community.property.entity.IssueFollowUp;
+import com.community.property.domain.entity.IssueFollowUp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
 

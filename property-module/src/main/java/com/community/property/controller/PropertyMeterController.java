@@ -1,6 +1,7 @@
 package com.community.property.controller;
 
 import com.community.property.service.PropertyService;
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,9 @@ public class PropertyMeterController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     /**
      * 获取仪表详细信息（包含配置信息）

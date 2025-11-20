@@ -1,8 +1,8 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.AuthResponse;
+import com.community.owner.service.RedisMessageService;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.OwnerService;
 import com.community.owner.service.OwnerQueryService;
 import com.aliyun.oss.OSS;
@@ -10,10 +10,6 @@ import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +45,9 @@ public class OwnerController {
 
     @Value("${aliyun.oss.endpoint}")
     private String endpoint;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 查看个人信息

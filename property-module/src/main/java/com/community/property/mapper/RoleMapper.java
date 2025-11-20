@@ -1,6 +1,6 @@
 package com.community.property.mapper;
 
-import com.community.property.entity.Role;
+import com.community.property.domain.entity.Role;
 import org.apache.ibatis.annotations.*;
 
 /**

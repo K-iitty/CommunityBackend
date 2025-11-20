@@ -27,6 +27,7 @@ public class RealtimeSyncController {
     @Autowired
     private RedisMessageService redisMessageService;
 
+
     // 存储活跃的SSE连接
     private final Map<String, CopyOnWriteArrayList<SseEmitter>> sseConnections = new ConcurrentHashMap<>();
 
@@ -83,7 +84,8 @@ public class RealtimeSyncController {
      */
     @GetMapping("/check-updates")
     public Map<String, Object> checkUpdates(@RequestParam String lastUpdateTime,
-                                          @RequestParam(required = false) String entityTypes) {
+                                          @RequestParam(required = false) String entityTypes,
+                                          @RequestHeader(value = "Authorization", required = false) String token) {
         
         long lastUpdate = Long.parseLong(lastUpdateTime);
         long currentTime = System.currentTimeMillis();

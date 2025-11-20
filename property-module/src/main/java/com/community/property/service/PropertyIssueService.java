@@ -1,7 +1,7 @@
 package com.community.property.service;
 
-import com.community.property.dto.IssueDetailVO;
-import com.community.property.dto.IssueFollowUpRequest;
+import com.community.property.domain.dto.vo.IssueDetailVO;
+import com.community.property.domain.dto.request.IssueFollowUpRequest;
 import java.util.Map;
 
 public interface PropertyIssueService {
@@ -65,4 +65,14 @@ public interface PropertyIssueService {
      * 获取问题统计数据（各状态的数量）
      */
     Map<String, Object> getIssueStatistics();
+
+    /**
+     * 查询分配给指定物业人员的问题
+     */
+    Map<String, Object> listIssuesForStaff(String staffId, Integer page, Integer size, String status);
+
+    /**
+     * 获取指定物业人员的问题统计数据
+     */
+    Map<String, Object> getIssueStatisticsForStaff(String staffId);
 }

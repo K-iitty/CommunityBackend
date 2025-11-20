@@ -1,6 +1,6 @@
 package com.community.property.service;
 
-import com.community.property.entity.Role;
+import com.community.property.domain.entity.Role;
 
 /**
  * 角色服务接口

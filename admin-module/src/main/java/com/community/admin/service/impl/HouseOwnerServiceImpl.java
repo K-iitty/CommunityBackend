@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.admin.dao.HouseOwnerDao;
+import com.community.admin.mapper.HouseOwnerDao;
 import com.community.admin.domain.entity.House;
 import com.community.admin.domain.entity.HouseOwner;
 import com.community.admin.domain.entity.Owner;
@@ -15,8 +15,6 @@ import com.community.admin.service.OwnerService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

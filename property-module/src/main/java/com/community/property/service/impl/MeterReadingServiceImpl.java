@@ -1,6 +1,6 @@
 package com.community.property.service.impl;
 
-import com.community.property.entity.MeterReading;
+import com.community.property.domain.entity.MeterReading;
 import com.community.property.mapper.MeterReadingMapper;
 import com.community.property.service.MeterReadingService;
 import com.community.property.service.ImageService;

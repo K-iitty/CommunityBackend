@@ -8,11 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="owner-module" />
         <module name="property-module" />
+        <module name="admin-module" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="admin-module" options="-parameters" />
       <module name="owner-module" options="-parameters" />
       <module name="property-module" options="-parameters" />
     </option>

@@ -1,7 +1,7 @@
 package com.community.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.community.admin.dao.SystemAdminDao;
+import com.community.admin.mapper.SystemAdminDao;
 import com.community.admin.domain.entity.SystemAdmin;
 import com.community.admin.service.SystemAdminLoginService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.community.property.service.impl;
 
 import com.community.property.mapper.CommunityNoticeMapper;
-import com.community.property.entity.CommunityNotice;
+import com.community.property.domain.entity.CommunityNotice;
 import com.community.property.service.CommunityNoticeService;
 import com.community.property.service.ImageService;
 import com.fasterxml.jackson.core.type.TypeReference;

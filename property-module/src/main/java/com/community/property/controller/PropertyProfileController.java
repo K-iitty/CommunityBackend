@@ -1,13 +1,10 @@
 package com.community.property.controller;
 
+import com.community.property.service.*;
 import com.community.property.utils.JwtUtil;
-import com.community.property.entity.Staff;
-import com.community.property.entity.Department;
-import com.community.property.entity.Role;
-import com.community.property.service.StaffService;
-import com.community.property.service.ImageService;
-import com.community.property.service.DepartmentService;
-import com.community.property.service.RoleService;
+import com.community.property.domain.entity.Staff;
+import com.community.property.domain.entity.Department;
+import com.community.property.domain.entity.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -42,6 +39,9 @@ public class PropertyProfileController {
     
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     /**
      * 获取个人完整信息

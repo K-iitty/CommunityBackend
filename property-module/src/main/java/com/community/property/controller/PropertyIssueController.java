@@ -1,9 +1,10 @@
 package com.community.property.controller;
 
-import com.community.property.dto.IssueDetailVO;
-import com.community.property.dto.IssueFollowUpRequest;
+import com.community.property.domain.dto.vo.IssueDetailVO;
+import com.community.property.domain.dto.request.IssueFollowUpRequest;
 import com.community.property.service.PropertyIssueService;
 import com.community.property.service.ImageService;
+import com.community.property.service.RedisMessageService;
 import com.community.property.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,11 +35,14 @@ public class PropertyIssueController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private RedisMessageService redisMessageService;
+
     /**
-     * 查询所有已分配的问题
+     * 查询分配给当前物业人员的问题
      */
     @GetMapping("/all")
-    @Operation(summary = "查询所有已分配的问题", description = "物业端查询所有已分配的问题列表")
+    @Operation(summary = "查询分配给当前物业人员的问题", description = "物业端查询分配给当前登录人员的问题列表")
     public Map<String, Object> getAllIssues(
             @Parameter(description = "页码", required = true)
             @RequestParam(defaultValue = "1") Integer page,
@@ -51,7 +55,15 @@ public class PropertyIssueController {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            Map<String, Object> data = propertyIssueService.listAllIssues(page, size, status);
+            // 从token中获取当前登录的物业人员ID
+            String currentStaffId = getCurrentStaffIdFromToken(token);
+            if (currentStaffId == null) {
+                response.put("success", false);
+                response.put("message", "无法获取当前用户信息");
+                return response;
+            }
+            
+            Map<String, Object> data = propertyIssueService.listIssuesForStaff(currentStaffId, page, size, status);
             response.put("success", true);
             response.put("data", data);
             return response;
@@ -62,19 +74,45 @@ public class PropertyIssueController {
         }
     }
 
+    /**
+     * 从token中获取当前物业人员ID
+     */
+    private String getCurrentStaffIdFromToken(String token) {
+        try {
+            // 移除Bearer前缀
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            // 从JWT token中解析员工ID
+            Long staffId = jwtUtil.getStaffIdFromToken(token);
+            return staffId != null ? staffId.toString() : null;
+        } catch (Exception e) {
+            System.err.println("解析token失败: " + e.getMessage());
+            return null;
+        }
+    }
 
     /**
-     * 获取问题统计数据
+     * 获取当前物业人员的问题统计数据
      */
     @GetMapping("/statistics/summary")
-    @Operation(summary = "获取问题统计数据", description = "获取各状态问题的统计数量")
+    @Operation(summary = "获取当前物业人员的问题统计数据", description = "获取分配给当前登录人员的各状态问题统计数量")
     public Map<String, Object> getIssueStatistics(
             @Parameter(description = "Authorization Token", required = true)
             @RequestHeader("Authorization") String token) {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            return propertyIssueService.getIssueStatistics();
+            // 从token中获取当前登录的物业人员ID
+            String currentStaffId = getCurrentStaffIdFromToken(token);
+            if (currentStaffId == null) {
+                response.put("success", false);
+                response.put("message", "无法获取当前用户信息");
+                return response;
+            }
+            
+            return propertyIssueService.getIssueStatisticsForStaff(currentStaffId);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "统计失败: " + e.getMessage());
@@ -128,7 +166,22 @@ public class PropertyIssueController {
         // 从Token获取员工ID（需要在JWT中包含staffId）
         Long staffId = jwtUtil.getStaffIdFromToken(realToken);
 
-        return propertyIssueService.startProcessing(id, staffId, planDescription);
+        Map<String, Object> result = propertyIssueService.startProcessing(id, staffId, planDescription);
+        
+        // 发布实时同步消息
+        if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+            try {
+                redisMessageService.publishPropertyChange("UPDATE", "OwnerIssue", id, null);
+                redisMessageService.publishNotification("owner", "ISSUE_PROCESSING", "问题处理中", 
+                    "您的问题已开始处理", null);
+                redisMessageService.publishNotification("admin", "ISSUE_PROCESSING", "问题处理中", 
+                    "物业开始处理问题ID: " + id, null);
+            } catch (Exception e) {
+                System.err.println("发布问题开始处理实时消息失败: " + e.getMessage());
+            }
+        }
+        
+        return result;
     }
 
     /**
@@ -170,8 +223,23 @@ public class PropertyIssueController {
             }
 
             // 调用Service提交处理结果
-            return propertyIssueService.submitProcessResultWithImages(id, staffId, resultDescription, 
+            Map<String, Object> result = propertyIssueService.submitProcessResultWithImages(id, staffId, resultDescription, 
                 processImagesJson, resultImagesJson, planDescription);
+            
+            // 发布实时同步消息
+            if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+                try {
+                    redisMessageService.publishPropertyChange("UPDATE", "OwnerIssue", id, null);
+                    redisMessageService.publishNotification("owner", "ISSUE_RESULT_SUBMITTED", "处理结果已提交", 
+                        "您的问题处理结果已提交", null);
+                    redisMessageService.publishNotification("admin", "ISSUE_RESULT_SUBMITTED", "处理结果已提交", 
+                        "物业提交了问题处理结果ID: " + id, null);
+                } catch (Exception e) {
+                    System.err.println("发布问题结果提交实时消息失败: " + e.getMessage());
+                }
+            }
+            
+            return result;
 
         } catch (Exception e) {
             response.put("success", false);
@@ -195,7 +263,22 @@ public class PropertyIssueController {
         String realToken = token.replace("Bearer ", "");
         Long staffId = jwtUtil.getStaffIdFromToken(realToken);
 
-        return propertyIssueService.markAsResolved(id, staffId);
+        Map<String, Object> result = propertyIssueService.markAsResolved(id, staffId);
+        
+        // 发布实时同步消息
+        if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+            try {
+                redisMessageService.publishPropertyChange("UPDATE", "OwnerIssue", id, null);
+                redisMessageService.publishNotification("owner", "ISSUE_RESOLVED", "问题已解决", 
+                    "您的问题已成功解决", null);
+                redisMessageService.publishNotification("admin", "ISSUE_RESOLVED", "问题已解决", 
+                    "物业已解决问题ID: " + id, null);
+            } catch (Exception e) {
+                System.err.println("发布问题解决实时消息失败: " + e.getMessage());
+            }
+        }
+        
+        return result;
     }
 
     /**
@@ -218,7 +301,22 @@ public class PropertyIssueController {
             String staffName = "物业员工";  // 从Token获取员工名称，这里先用默认值
 
             // 调用Service添加跟进记录
-            return propertyIssueService.addFollowUp(id, request, staffId, staffName);
+            Map<String, Object> result = propertyIssueService.addFollowUp(id, request, staffId, staffName);
+            
+            // 发布实时同步消息
+            if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+                try {
+                    redisMessageService.publishPropertyChange("CREATE", "IssueFollowUp", id, null);
+                    redisMessageService.publishNotification("owner", "ISSUE_FOLLOW_UP", "问题跟进", 
+                        "您的问题有新的跟进记录", null);
+                    redisMessageService.publishNotification("admin", "ISSUE_FOLLOW_UP", "问题跟进", 
+                        "物业添加了问题跟进记录ID: " + id, null);
+                } catch (Exception e) {
+                    System.err.println("发布问题跟进实时消息失败: " + e.getMessage());
+                }
+            }
+            
+            return result;
 
         } catch (Exception e) {
             response.put("success", false);

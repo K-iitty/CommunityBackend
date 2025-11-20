@@ -1,6 +1,6 @@
 package com.community.owner.service;
 
-import com.community.owner.entity.SmartQaKnowledge;
+import com.community.owner.domain.entity.SmartQaKnowledge;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;

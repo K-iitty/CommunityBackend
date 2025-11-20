@@ -2,13 +2,13 @@ package com.community.owner.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.community.owner.domain.entity.*;
 import com.community.owner.mapper.IssueFollowUpMapper;
 import com.community.owner.mapper.OwnerIssueMapper;
-import com.community.owner.dto.IssueDetailVO;
-import com.community.owner.dto.IssueEvaluationRequest;
-import com.community.owner.dto.IssueFollowUpRequest;
-import com.community.owner.dto.IssueSubmitRequest;
-import com.community.owner.entity.*;
+import com.community.owner.domain.dto.vo.IssueDetailVO;
+import com.community.owner.domain.dto.request.IssueEvaluationRequest;
+import com.community.owner.domain.dto.request.IssueFollowUpRequest;
+import com.community.owner.domain.dto.request.IssueSubmitRequest;
 import com.community.owner.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

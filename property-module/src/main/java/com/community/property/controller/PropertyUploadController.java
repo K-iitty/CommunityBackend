@@ -3,6 +3,7 @@ package com.community.property.controller;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.community.property.config.OssConfig;
+import com.community.property.service.RedisMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +26,9 @@ public class PropertyUploadController {
     
     @Autowired
     private OssConfig ossConfig;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     // 最大文件大小: 50MB
     private static final long MAX_FILE_SIZE = 50 * 1024 * 1024;

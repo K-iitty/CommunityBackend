@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.community.admin.common.service.OssService;
-import com.community.admin.dao.OwnerDao;
+import com.community.admin.mapper.OwnerDao;
 import com.community.admin.domain.entity.Owner;
 import com.community.admin.service.OwnerService;
 import org.apache.commons.lang3.StringUtils;
@@ -14,13 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional

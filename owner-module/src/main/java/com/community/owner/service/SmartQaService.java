@@ -1,6 +1,6 @@
 package com.community.owner.service;
 
-import com.community.owner.dto.QaRequest;
+import com.community.owner.domain.dto.request.QaRequest;
 import reactor.core.publisher.Flux;
 
 /**

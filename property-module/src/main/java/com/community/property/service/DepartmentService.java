@@ -1,6 +1,6 @@
 package com.community.property.service;
 
-import com.community.property.entity.Department;
+import com.community.property.domain.entity.Department;
 
 import java.util.Map;
 

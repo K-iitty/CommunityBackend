@@ -1,7 +1,7 @@
 package com.community.property.service.impl;
 
 import com.community.property.mapper.RoleMapper;
-import com.community.property.entity.Role;
+import com.community.property.domain.entity.Role;
 import com.community.property.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

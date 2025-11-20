@@ -1,5 +1,6 @@
 package com.community.property.controller;
 
+import com.community.property.service.RedisMessageService;
 import com.community.property.service.VehicleService;
 import com.community.property.service.PropertyService;
 import com.community.property.utils.JwtUtil;
@@ -30,6 +31,9 @@ public class PropertyVehicleController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisMessageService redisMessageService;
 
     /**
      * 获取车辆详细信息
@@ -94,8 +98,23 @@ public class PropertyVehicleController {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            return vehicleService.updateVehicle(vehicleId, plateNumber, vehicleType, brand, model, 
+            Map<String, Object> result = vehicleService.updateVehicle(vehicleId, plateNumber, vehicleType, brand, model, 
                     color, vehicleLicenseNo, engineNo, status, registerDate, remark, ownerId, fixedSpaceId);
+            
+            // 发布实时同步消息
+            if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+                try {
+                    redisMessageService.publishPropertyChange("UPDATE", "Vehicle", vehicleId, null);
+                    redisMessageService.publishNotification("owner", "VEHICLE_UPDATED", "车辆信息更新", 
+                        "物业更新了您的车辆信息", ownerId);
+                    redisMessageService.publishNotification("admin", "VEHICLE_UPDATED", "车辆信息更新", 
+                        "物业更新了车辆信息ID: " + vehicleId, null);
+                } catch (Exception e) {
+                    System.err.println("发布车辆更新实时消息失败: " + e.getMessage());
+                }
+            }
+            
+            return result;
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "更新车辆失败: " + e.getMessage());
@@ -147,6 +166,23 @@ public class PropertyVehicleController {
                     ownerId, plateNumber, vehicleType, brand, model, color, 
                     fixedSpaceId, vehicleLicenseNo, engineNo, status, registerDate, remark,
                     driverLicenseImageFile, vehicleImageFiles);
+            
+            // 发布实时同步消息
+            if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+                try {
+                    Object vehicleIdObj = result.get("vehicleId");
+                    Long vehicleId = vehicleIdObj != null ? Long.valueOf(vehicleIdObj.toString()) : null;
+                    
+                    redisMessageService.publishPropertyChange("CREATE", "Vehicle", vehicleId, null);
+                    redisMessageService.publishNotification("owner", "VEHICLE_ADDED", "车辆添加", 
+                        "物业为您添加了车辆：" + plateNumber, ownerId);
+                    redisMessageService.publishNotification("admin", "VEHICLE_ADDED", "车辆添加", 
+                        "物业添加了车辆：" + plateNumber, null);
+                } catch (Exception e) {
+                    System.err.println("发布车辆添加实时消息失败: " + e.getMessage());
+                }
+            }
+            
             return result;
         } catch (Exception e) {
             response.put("success", false);
@@ -403,7 +439,39 @@ public class PropertyVehicleController {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            return vehicleService.deleteVehicle(vehicleId);
+            // 先获取车辆信息用于通知
+            Map<String, Object> vehicleDetail = null;
+            try {
+                vehicleDetail = vehicleService.getVehicleDetail(vehicleId);
+            } catch (Exception e) {
+                // 获取车辆信息失败不影响删除操作
+            }
+            
+            Map<String, Object> result = vehicleService.deleteVehicle(vehicleId);
+            
+            // 发布实时同步消息
+            if (result != null && Boolean.TRUE.equals(result.get("success"))) {
+                try {
+                    redisMessageService.publishPropertyChange("DELETE", "Vehicle", vehicleId, null);
+                    
+                    String plateNumber = "未知车牌";
+                    Long ownerId = null;
+                    if (vehicleDetail != null && vehicleDetail.get("data") != null) {
+                        Map<String, Object> data = (Map<String, Object>) vehicleDetail.get("data");
+                        plateNumber = (String) data.get("plateNumber");
+                        ownerId = (Long) data.get("ownerId");
+                    }
+                    
+                    redisMessageService.publishNotification("owner", "VEHICLE_DELETED", "车辆删除", 
+                        "物业删除了您的车辆：" + plateNumber, ownerId);
+                    redisMessageService.publishNotification("admin", "VEHICLE_DELETED", "车辆删除", 
+                        "物业删除了车辆：" + plateNumber, null);
+                } catch (Exception e) {
+                    System.err.println("发布车辆删除实时消息失败: " + e.getMessage());
+                }
+            }
+            
+            return result;
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "删除失败: " + e.getMessage());

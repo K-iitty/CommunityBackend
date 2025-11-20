@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.community.admin.common.service.OssService;
-import com.community.admin.dao.CommunityNoticeDao;
+import com.community.admin.mapper.CommunityNoticeDao;
 import com.community.admin.domain.entity.CommunityNotice;
 import com.community.admin.service.CommunityNoticeService;
 import org.apache.commons.lang3.StringUtils;

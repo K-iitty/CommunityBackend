@@ -1,8 +1,9 @@
 package com.community.owner.controller;
 
-import com.community.owner.dto.DepartmentContactVO;
+import com.community.owner.domain.dto.vo.DepartmentContactVO;
+import com.community.owner.service.RedisMessageService;
 import com.community.owner.utils.JwtUtil;
-import com.community.owner.entity.Owner;
+import com.community.owner.domain.entity.Owner;
 import com.community.owner.service.OwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +29,8 @@ import java.util.Map;
 @RequestMapping("/api/owner/contacts")
 @Tag(name = "业主电话咨询", description = "查询各部门负责人电话信息")
 public class DepartmentContactController {
+    @Autowired
+    private RedisMessageService redisMessageService;
     
     @Autowired
     private OwnerService ownerService;
